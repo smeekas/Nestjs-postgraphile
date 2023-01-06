@@ -1,14 +1,16 @@
 import postgraphile, { Build, ExtensionDefinition, gql } from "postgraphile";
 import { makeExtendSchemaPlugin, Resolvers, makeWrapResolversPlugin } from 'graphile-utils'
 import simply from '@graphile-contrib/pg-simplify-inflector';
+import { config } from "dotenv";
+config({path : '.env'})
 
 // type hell=(build:Build)=>{typeDefs:}
 const plug = makeExtendSchemaPlugin((build: Build): ExtensionDefinition => {
     // console.log(build.graphql.)
-
+    
     return {
         typeDefs: gql`
-       
+        
         extend type User{
             income:Int
         }
@@ -37,15 +39,15 @@ const postgraphileProvider = {
     provide: "POSTGINIT",
     useFactory: () => {
         return postgraphile(
-            "postgres://postgres:adminadmin@172.16.6.241:5432/mydb", "public", {
-            watchPg: true,
-            graphiql: true,
-            enhanceGraphiql: true,
-            allowExplain: true,
-            appendPlugins: [simply, plug, reso],
-            graphiqlRoute: "/use/graphiql",
-            graphqlRoute: "/use/graphql",
-
+            `postgres://${process.env.POST_USER}:${process.env.POST_PASS}@172.16.6.241:5432/mydb`, "public", {
+                watchPg: true,
+                graphiql: true,
+                enhanceGraphiql: true,
+                allowExplain: true,
+                appendPlugins: [simply, plug, reso],
+                graphiqlRoute: "/use/graphiql",
+                graphqlRoute: "/use/graphql",
+                
         }
         )
     }
